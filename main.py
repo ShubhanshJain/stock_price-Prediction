@@ -34,6 +34,9 @@ data = load_data(selected_stock)
 data_load_state.text('Loading data... done!')
 
 st.subheader('Raw data')
+data.columns = data.columns.get_level_values(0)
+if data.columns[0] == "":
+    data.rename(columns={data.columns[0]: "Date"}, inplace=True)
 st.write(data.tail())
 
 # Plot raw data
