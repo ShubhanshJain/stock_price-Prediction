@@ -36,7 +36,7 @@ data_load_state.text('Loading data... done!')
 st.subheader('Raw data')
 data.columns = data.columns.get_level_values(0)
 if data.columns[0] == "":
-    data.rename(columns={data.columns[0]: "Date"}, inplace=True).dt.tz_localize(None)
+    data.rename(columns={data.columns[0]: "Date"}, inplace=True)
 st.write(data.tail())
 
 # Plot raw data
@@ -51,7 +51,7 @@ plot_raw_data()
 
 # Predict forecast with Prophet.
 df_train = data[['Date','Close']]
-df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+df_train = df_train.rename(columns={"Date": "ds", "Close": "y"}).dt.tz_localize(None)
 
 m = Prophet()
 m.fit(df_train)
