@@ -3,3 +3,4 @@ prophet
 pystan
 yfinance
 plotly
+pandas
