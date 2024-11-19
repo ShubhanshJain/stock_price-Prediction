@@ -4,11 +4,7 @@ import yfinance as yf
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from plotly import graph_objs as go
-
-import ssl
-import certifi
-
-ssl._create_default_https_context = ssl._create_unverified_context
+import pandas as pd
 
 START = "2022-01-01"
 TODAY = datetime.now().strftime("%Y-%m-%d")
@@ -37,11 +33,13 @@ st.subheader('Raw data')
 data.columns = data.columns.get_level_values(0)
 if data.columns[0] == "":
     data.rename(columns={data.columns[0]: "Date"}, inplace=True)
+data['Date'] = data['Date'].dt.tz_localize(None)
 st.write(data.tail())
 
 # Plot raw data
 def plot_raw_data():
 	fig = go.Figure()
+	
 	fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
 	fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
 	fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
@@ -51,7 +49,7 @@ plot_raw_data()
 
 # Predict forecast with Prophet.
 df_train = data[['Date','Close']]
-df_train = df_train.rename(columns={"Date": "ds", "Close": "y"}).dt.tz_localize(None)
+df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
 
 m = Prophet()
 m.fit(df_train)
